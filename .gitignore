@@ -1,0 +1,20 @@
+node_modules/
+
+# Python runtime files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local Flask data and secrets
+backend/instance/
+backend/*.db
+.env
+.env.*
+
+# Generated uploads
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# Frontend build output
+dist/
