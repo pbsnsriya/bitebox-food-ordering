@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ChefHat, CircleUserRound, Search, ShoppingCart, LogOut, Plus, Minus, X, LayoutDashboard, PackageCheck } from "lucide-react";
+import { ChefHat, CircleUserRound, Search, ShoppingCart, LogOut, Plus, Minus, X, LayoutDashboard, PackageCheck, Pencil, Trash2 } from "lucide-react";
 import "./styles.css";
 
 const API_URL = "http://localhost:5000/api";
@@ -253,6 +253,7 @@ function Admin() {
     const [tags, setTags] = useState("");
     const [available, setAvailable] = useState(true);
     const [imageFile, setImageFile] = useState(null);
+    const [editingItem, setEditingItem] = useState(null);
 
     const [dashboard, setDashboard] = useState(null);
     const [orders, setOrders] = useState([]);
@@ -301,31 +302,58 @@ function Admin() {
                 formData.append("image", imageFile);
             }
 
-            await api.post(
-                "/admin/menu",
-                formData
-            );
+            if (editingItem) {
+                await api.put(`/admin/menu/${editingItem.id}`, formData);
+            } else {
+                await api.post("/admin/menu", formData);
+            }
 
-            setName("");
-            setDescription("");
-            setCategory("South Indian");
-            setPrice("");
-            setTags("");
-            setAvailable(true);
-            setImageFile(null);
+            resetMenuForm();
 
             await refresh();
 
-            alert("Food item added successfully");
+            alert(editingItem ? "Food item updated successfully" : "Food item added successfully");
 
         } catch (error) {
             console.error(error);
 
             alert(
                 error.response?.data?.error ||
-                "Unable to add food item"
+                editingItem ? "Unable to update food item" : "Unable to add food item"
             );
         }
+    }
+
+    function resetMenuForm() {
+        setName("");
+        setDescription("");
+        setCategory("South Indian");
+        setPrice("");
+        setTags("");
+        setAvailable(true);
+        setImageFile(null);
+        setEditingItem(null);
+    }
+
+    function editMenuItem(item) {
+        setEditingItem(item);
+        setName(item.name);
+        setDescription(item.description || "");
+        setCategory(item.category);
+        setPrice(item.price);
+        setTags((item.tags || []).join(", "));
+        setAvailable(item.available);
+        setImageFile(null);
+        setTab("menu");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleTag(tag) {
+        const currentTags = tags.split(",").map(value => value.trim()).filter(Boolean);
+        const nextTags = currentTags.includes(tag)
+            ? currentTags.filter(value => value !== tag)
+            : [...currentTags, tag];
+        setTags(nextTags.join(", "));
     }
 
     async function deleteMenuItem(id) {
@@ -609,7 +637,15 @@ function Admin() {
 
                         <div className="panel-heading">
 
-                            <h2>Add Food Item</h2>
+                            <div>
+                                <p className="eyebrow">MENU EDITOR</p>
+                                <h2>{editingItem ? "Edit food item" : "Add food item"}</h2>
+                            </div>
+                            {editingItem && (
+                                <button type="button" className="text-button" onClick={resetMenuForm}>
+                                    Cancel edit
+                                </button>
+                            )}
 
                         </div>
 
@@ -697,14 +733,19 @@ function Admin() {
                             />
 
 
-                            <input
-                                type="text"
-                                placeholder="Tags: vegetarian, spicy"
-                                value={tags}
-                                onChange={(e) =>
-                                    setTags(e.target.value)
-                                }
-                            />
+                            <fieldset className="tag-picker">
+                                <legend>Dietary tags</legend>
+                                {["vegetarian", "non-vegetarian", "spicy"].map(tag => (
+                                    <label key={tag}>
+                                        <input
+                                            type="checkbox"
+                                            checked={tags.split(",").map(value => value.trim()).includes(tag)}
+                                            onChange={() => toggleTag(tag)}
+                                        />
+                                        {tag}
+                                    </label>
+                                ))}
+                            </fieldset>
 
 
                             <label>
@@ -740,8 +781,8 @@ function Admin() {
                             </label>
 
 
-                            <button type="submit">
-                                Add Food
+                            <button type="submit" className="primary-button">
+                                {editingItem ? "Save changes" : "Add food item"}
                             </button>
 
                         </form>
@@ -829,6 +870,17 @@ function Admin() {
 
 
                                     <button
+                                        className="secondary-button"
+                                        title={`Edit ${item.name}`}
+                                        aria-label={`Edit ${item.name}`}
+                                        onClick={() => editMenuItem(item)}
+                                    >
+                                        <Pencil size={15} />
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        className="secondary-button"
                                         onClick={() =>
                                             changeAvailability(item)
                                         }
@@ -842,10 +894,14 @@ function Admin() {
 
 
                                     <button
+                                        className="danger-button"
+                                        title={`Remove ${item.name}`}
+                                        aria-label={`Remove ${item.name}`}
                                         onClick={() =>
                                             deleteMenuItem(item.id)
                                         }
                                     >
+                                        <Trash2 size={15} />
                                         Remove
                                     </button>
 

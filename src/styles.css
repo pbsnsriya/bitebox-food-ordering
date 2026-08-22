@@ -118,6 +118,22 @@ h2 { font-family: "Playfair Display", serif; font-size: 34px; letter-spacing: -.
 .admin-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .admin-panel { padding: 22px; margin-bottom: 20px; }
 .admin-panel h2 { font-size: 24px; margin-bottom: 20px; }
+.admin-panel .eyebrow { margin-bottom: 4px; }
+.admin-food-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.admin-food-form input, .admin-food-form textarea, .admin-food-form select { width: 100%; border: 1px solid #d8d1c6; background: white; padding: 12px 13px; border-radius: 9px; outline: none; }
+.admin-food-form textarea { min-height: 92px; resize: vertical; grid-column: 1 / -1; }
+.admin-food-form input:focus, .admin-food-form textarea:focus, .admin-food-form select:focus { border-color: #1f4d3a; box-shadow: 0 0 0 3px rgba(31,77,58,.08); }
+.admin-food-form > label:not(.tag-picker label) { align-self: center; color: #625e56; font-size: 13px; font-weight: 600; }
+.admin-food-form > input[type="file"] { padding: 9px; }
+.tag-picker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; border: 0; padding: 0; margin: 0; }
+.tag-picker legend { width: 100%; color: #625e56; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.tag-picker label { display: inline-flex; align-items: center; gap: 6px; color: #625e56; font-size: 12px; text-transform: capitalize; }
+.tag-picker input { width: auto; accent-color: #1f4d3a; }
+.admin-food-form .primary-button { justify-self: start; }
+.text-button { background: transparent; color: #1f4d3a; font-weight: 600; font-size: 13px; padding: 5px 0; }
+.secondary-button, .danger-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; padding: 8px 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.secondary-button { background: #f1eee7; color: #1f4d3a; }
+.danger-button { background: #fff0ed; color: #b23d2e; }
 .bar-row { display: grid; grid-template-columns: 95px 1fr 25px; gap: 10px; align-items: center; font-size: 12px; margin: 13px 0; }
 .bar-row > div { background: #eeeae2; height: 8px; border-radius: 100px; overflow: hidden; }
 .bar-row i { display: block; height: 100%; background: #4e7d64; border-radius: inherit; }
@@ -129,10 +145,11 @@ h2 { font-family: "Playfair Display", serif; font-size: 34px; letter-spacing: -.
 .admin-order select { border: 1px solid #d8d1c5; background: white; border-radius: 8px; padding: 8px; }
 .panel-heading { display: flex; justify-content: space-between; align-items: center; }
 .panel-heading span { color: #77736b; font-size: 12px; }
-.admin-menu-row { display: grid; grid-template-columns: 58px 1fr 1fr auto; gap: 15px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee8de; }
+.admin-menu-row { display: grid; grid-template-columns: 58px minmax(150px, 1.5fr) minmax(120px, 1fr) auto auto auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee8de; }
 .admin-menu-row img { width: 58px; height: 48px; object-fit: cover; border-radius: 7px; }
 .admin-menu-row small { display: block; color: #77736b; margin-top: 3px; }
 .available { color: #286047; font-size: 11px; background: #eaf2ed; padding: 5px 8px; border-radius: 100px; }
+.unavailable { color: #9b4b3d; font-size: 11px; background: #fff0ed; padding: 5px 8px; border-radius: 100px; }
 
 @media (max-width: 950px) {
   .hero, .auth-page { grid-template-columns: 1fr; }
@@ -141,6 +158,8 @@ h2 { font-family: "Playfair Display", serif; font-size: 34px; letter-spacing: -.
   .menu-grid { grid-template-columns: repeat(2, 1fr); }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .admin-columns { grid-template-columns: 1fr; }
+  .admin-food-form { grid-template-columns: 1fr; }
+  .admin-food-form textarea { grid-column: auto; }
 }
 @media (max-width: 680px) {
   .topbar { gap: 15px; padding: 0 4%; }
@@ -158,7 +177,11 @@ h2 { font-family: "Playfair Display", serif; font-size: 34px; letter-spacing: -.
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .admin-order { grid-template-columns: 1fr auto; }
   .admin-order select { grid-column: 1 / -1; width: 100%; }
-  .admin-menu-row { grid-template-columns: 58px 1fr auto; }
+  .admin-menu-row { grid-template-columns: 58px 1fr auto; gap: 10px; }
   .admin-menu-row .tags { display: none; }
+  .admin-menu-row .admin-menu-info { min-width: 0; }
+  .admin-menu-row .admin-menu-info small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-menu-row > .available, .admin-menu-row > .unavailable { grid-column: 2; justify-self: start; }
+  .admin-menu-row > button { grid-column: 3; }
   .auth-panel { padding: 30px 22px; }
 }
