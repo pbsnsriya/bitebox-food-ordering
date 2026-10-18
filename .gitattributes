@@ -1,0 +1,23 @@
+# Text files are stored with LF in the repository and checked out with the line ending of the operating system.
+* text=auto
+
+# Binary files and data are never converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.doc binary
+*.docx binary
+*.ppt binary
+*.pptx binary
+*.xls binary
+*.xlsx binary
+*.zip binary
+*.h5 binary
+*.pkl binary
+*.woff binary
+*.woff2 binary
+*.csv -text
